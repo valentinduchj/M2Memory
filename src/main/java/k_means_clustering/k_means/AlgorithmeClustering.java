@@ -21,6 +21,14 @@ public class AlgorithmeClustering {
 	List<Pixel> listpixel = new ArrayList<Pixel>();
 	List<Cluster> listcluster = new ArrayList<Cluster>();
 
+	public void initializeManually(String lien, int numberCluster, int numberInterator, int tolerance) throws IOException {
+		
+		getRGBValue(lien);
+		generateCluster(numberCluster);
+		iteratorCluster(numberInterator);
+		setRGBValue(lien, tolerance);
+		
+	}
 	public void getRGBValue(String lien) throws IOException {
 
 		BufferedImage bi = ImageIO.read(new File(lien));
@@ -133,7 +141,7 @@ public class AlgorithmeClustering {
 
 	}
 
-	public void setRGBValue(String lien) throws IOException {
+	public void setRGBValue(String lien, int tolerance) throws IOException {
 		BufferedImage bi = ImageIO.read(new File(lien));
 		BufferedImage bi2 = ImageIO.read(new File(lien));
 
@@ -152,10 +160,10 @@ public class AlgorithmeClustering {
 		frame.getContentPane().add(new JLabel(new ImageIcon(bi2)));
 		frame.pack();
 		frame.setVisible(true);
-		MeasureQuality(bi, bi2);
+		MeasureQuality(bi, bi2, tolerance);
 	}
 
-	public void MeasureQuality(BufferedImage bi, BufferedImage bi2) {
+	public void MeasureQuality(BufferedImage bi, BufferedImage bi2, int tolerance) {
 		System.out.println("Mesure du taux d'erreur...");
 		float result = 0;
 		for (int x = 0; x < bi.getWidth(); x++) {
@@ -172,14 +180,20 @@ public class AlgorithmeClustering {
 				int blue2 = (pixel3) & 0xff;
 				Pixel pixel4 = new Pixel(x, y, red2, green2, blue2);
 
-				 result += ((Math.abs((pixel2.getRed() - pixel4.getRed()))
+				 float diff = ((Math.abs((pixel2.getRed() - pixel4.getRed()))
 						+ Math.abs((pixel2.getGreen() - pixel4.getGreen()))
-						+ Math.abs((pixel2.getBlue() - pixel4.getBlue()))))/3;
+						+ Math.abs((pixel2.getBlue() - pixel4.getBlue()))));
+				 //Tolérence
+				 if(diff > tolerance) {
+					 result += diff;
+				 }
 			}
 		}
 		
-		float maximumErreur = 255*bi.getHeight()*bi.getWidth();
-		
+		float maximumErreur = (255*bi.getHeight()*bi.getWidth())/2;
+		System.out.println(bi.getHeight()*bi.getWidth() + " pixels");
+		System.out.println("donc " + 255*3*bi.getHeight()*bi.getWidth() + " erreurs possibles");
+		System.out.println("Nombre d'erreurs " + result);
 		System.out.println((result*100)/maximumErreur + " %");
 	}
 
