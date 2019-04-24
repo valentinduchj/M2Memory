@@ -9,8 +9,10 @@ public class main {
 
 		
 		AlgorithmeClustering algo1 = new AlgorithmeClustering();
-		String image = "src/main/resources/home-312x211.jpg";
-		algo1.initializeManually(image, 100, 100, 20); // String, nombre de Clusters, nombre d'itérations, tolérance
+		String image = "src/main/resources/google-chrome-300x300.png";
+		algo1.initializeManually(image, 100, 300, 20); // String, nombre de Clusters, nombre d'itérations, tolérance
+		//RandIndex algo1 = new RandIndex();
+		//algo1.IntializeLists();
 		
 	}
 }

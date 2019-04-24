@@ -28,6 +28,7 @@ public class AlgorithmeClustering {
 		iteratorCluster(numberInterator);
 		setRGBValue(lien, tolerance);
 		
+		
 	}
 	public void getRGBValue(String lien) throws IOException {
 
@@ -64,7 +65,8 @@ public class AlgorithmeClustering {
 		}
 	}
 
-	public void iteratorCluster(int numberInterator) {
+	public void iteratorCluster(int numberInterator) throws IOException {
+
 		int stop = 0;
 		while (stop < numberInterator) {
 			for (Cluster p : listcluster) {
@@ -79,7 +81,7 @@ public class AlgorithmeClustering {
 					float result = Math.abs((p.getPosX() - c.getPosX())) + Math.abs((p.getPosY() - c.getPosY()))
 							+ Math.abs((p.getRed() - c.getRed())) + Math.abs((p.getGreen() - c.getGreen()))
 							+ Math.abs((p.getBlue() - c.getBlue()));
-					if (result2 > result) {
+					if (result2 > result ) {
 						result2 = result;
 						tmp.add(c);
 					}
@@ -133,11 +135,14 @@ public class AlgorithmeClustering {
 
 		// SUPPRIMER LES CLUSTERS AVEC 0 PIXEL
 		Iterator<Cluster> it = listcluster.iterator();
+		int numberClusterRemoved = 0;
 		while (it.hasNext()) {
 			if (it.next().getListpixel().isEmpty()) {
+				numberClusterRemoved += 1;
 				it.remove();
 			}
 		}
+		System.out.println("Nombre de clusters inutilisés " + numberClusterRemoved + " soit " + numberClusterRemoved*100/(listcluster.size() + numberClusterRemoved) + " %" );
 
 	}
 
@@ -147,19 +152,30 @@ public class AlgorithmeClustering {
 
 		for (Cluster c : listcluster) {
 			for (Pixel p : c.getListpixel()) {
+				
+				bi2.setRGB(p.getPosX(), p.getPosY(), 0);
+
+			}
+
+		}
+		for (Cluster c : listcluster) {
+			for (Pixel p : c.getListpixel()) {
 				p.setRed(c.getRed());
 				p.setBlue(c.getBlue());
 				p.setGreen(c.getGreen());
 				// System.out.println(p.getPosX() + ":" + p.getPosY());
 				bi2.setRGB(p.getPosX(), p.getPosY(), new Color(p.getRed(), p.getGreen(), p.getBlue()).getRGB());
-
 			}
+
 		}
+		
 		JFrame frame = new JFrame();
 		frame.getContentPane().setLayout(new FlowLayout());
 		frame.getContentPane().add(new JLabel(new ImageIcon(bi2)));
 		frame.pack();
 		frame.setVisible(true);
+		File outputfile = new File("src/main/resources/newImage.png");
+		ImageIO.write(bi2, "png", outputfile);
 		MeasureQuality(bi, bi2, tolerance);
 	}
 
