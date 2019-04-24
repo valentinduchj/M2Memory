@@ -44,7 +44,7 @@ L'**indice de Rand**  est une mesure de similarité entre deux partitions d'un e
 Il faut ajouter dans le main 
 
     	RandIndex algo1 = new RandIndex();
-	algo1.IntializeLists();
+		algo1.IntializeLists();
 	
 L'indice de Rand est calculé comme suit :
 
